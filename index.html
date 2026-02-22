@@ -118,7 +118,7 @@ btnClicker.addEventListener("click", function(event) {
     
     if(skor >= autoclickerCost){
         skor -= autoclickerCost
-        multiplier += 2
+        multiplier *= 2
         autoclickerCost *= 2 // price gets 2x more expensive
         update() // update the screen
     } else {
