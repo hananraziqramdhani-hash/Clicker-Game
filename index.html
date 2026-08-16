@@ -57,13 +57,27 @@ h3{
         <h2>Multiplier:<span id="multi">1</span></h2><br>
         <button id="clicker">Clicker<br> Cost: <span id="clickercost"></span></button><br>
         <button id="rebirth">Prestige: Cost <span id="rebirthCost"></span></button>
-        </div>
+      <br>
+      <button onclick="exportGame()">Export Save</button>
+       <br>
+     <h3>Import Save</h3>
+      <br>
+       <input
+    type="file"
+    id="importFile"
+    accept=".json"
+    onchange="importGame(event)"
+>
+      <br>
+
+<p id="saveStatus"></p>
+    </div>
                 <script>
             //start script
 //variables(vip)
 let skor = 0
 let multiplier = 1
-let multiplierCost = 30
+let multiplierCost = 50
 const multiDis = document.getElementById("multi")
 let autoclickerCost = 50
 let rbcost = 1000
@@ -95,7 +109,7 @@ function ulangi(){
     multiplier = 1
     rbcost = 1000
     autoclickerCost = 50
-    multiplierCost = 30
+    multiplierCost = 50
     }
     update()
 }
@@ -160,32 +174,103 @@ function start(){
     gameplay.style.display = "block"
     update()
 }
-//Special-savedata
-//loads content
-window.onload = () => {
-    if (localStorage.getItem("savedScore")) {
-        skor = parseFloat(localStorage.getItem("savedScore"))
-        multiplier = parseFloat(localStorage.getItem("savedMultiplier"))
-        rbcost = parseFloat(localStorage.getItem("savedPrestigeCost"))
-        multiplierCost = parseFloat(localStorage.getItem("savedMultiplierCost"))
-        autoclickerCost = parseFloat(localStorage.getItem("savedAutoClickerCost"))
-        update();
-    }
-};
+//Special-import-export
 
-//save
-function saveGame() {
-    localStorage.setItem("savedScore", skor)
-    localStorage.setItem("savedMultiplier", multiplier)
-    localStorage.setItem("savedPrestigeCost", rbcost)
-    localStorage.setItem("savedAutoClickerCost", autoclickerCost)
-    localStorage.setItem("savedMultiplierCost",
-    multiplierCost)
+function exportGame() {
+
+    const saveData = {
+        score: skor,
+        multiplier: multiplier,
+        multiplierCost: multiplierCost,
+        autoClickerCost: autoclickerCost,
+        prestigeCost: rbcost
+    };
+
+    const json = JSON.stringify(saveData, null, 2);
+
+    const blob = new Blob(
+        [json],
+        { type: "application/json" }
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "clicker-save.json";
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    setTimeout(function() {
+        URL.revokeObjectURL(url);
+    }, 1000);
+
+    document.getElementById("saveStatus").textContent =
+        "Save exported successfully!";
 }
-//saves every 1/2s
-setInterval(function(){
-  saveGame()
-}, 500)
+
+
+function importGame(event) {
+
+    const file = event.target.files[0];
+
+    if (!file) {
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function() {
+
+        try {
+
+            const saveData = JSON.parse(reader.result);
+
+            if (
+                typeof saveData.score !== "number" ||
+                typeof saveData.multiplier !== "number" ||
+                typeof saveData.multiplierCost !== "number" ||
+                typeof saveData.autoClickerCost !== "number" ||
+                typeof saveData.prestigeCost !== "number"
+            ) {
+                throw new Error("Invalid save file.");
+            }
+
+            skor = saveData.score;
+            multiplier = saveData.multiplier;
+            multiplierCost = saveData.multiplierCost;
+            autoclickerCost = saveData.autoClickerCost;
+            rbcost = saveData.prestigeCost;
+
+            update();
+
+            document.getElementById("saveStatus").textContent =
+                "Save imported successfully!";
+
+        } catch (error) {
+
+            document.getElementById("saveStatus").textContent =
+                "Import failed: invalid save file.";
+
+        }
+
+    };
+
+    reader.onerror = function() {
+
+        document.getElementById("saveStatus").textContent =
+            "Import failed: could not read the file.";
+
+    };
+
+    reader.readAsText(file);
+
+    // Allows the same file to be imported again
+    event.target.value = "";
+        }
 //end da script
         </script>
     </body>
