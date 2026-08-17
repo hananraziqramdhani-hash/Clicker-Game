@@ -1,277 +1,981 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Click Game Made By AKUhanan</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <style>
-            body {
-    text-align:center;
-    background-repeat:no-repeat ;
-    font-family:Arial, sans-serif;
-    height:100%;
-    background:skyblue;
-    touch-action:manipulation;
+<head>
+<title>Click Game Made By AKUhanan</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<style>
+*{box-sizing:border-box}
+
+body{
+margin:0;
+font-family:Georgia,"Times New Roman",serif;
+background:#6b4f3a;
+color:#f5eadc;
+text-align:center;
+touch-action:manipulation
 }
+
+.panel,.game{
+width:90%;
+max-width:500px;
+margin:70px auto;
+padding:30px 22px;
+background:#80624b;
+border:1px solid #a98a70;
+border-radius:18px;
+box-shadow:0 10px 30px #0005
+}
+
+.game{
+display:none;
+margin:30px auto
+}
+
 button{
-    font-family:Arial;
-    background:gray;
-    color:black;
-    border-radius:5px;
-    border:2px solid black;
-    font-weight:bold;
+font-family:Georgia,"Times New Roman",serif;
+padding:11px 18px;
+margin:6px;
+border:1px solid #c3a98e;
+border-radius:10px;
+background:#a58265;
+color:#fff5e8;
+font-weight:bold;
+cursor:pointer
 }
-#gameplay{
-    text-align: center;
-    width:100%;
-    height:100%;
-    display:none;
+
+button:hover{
+background:#b59273
 }
-#play{
-    width:90px;
-    height:40px;
-    border-radius:0;
+
+input{
+width:90%;
+max-width:320px;
+padding:11px;
+margin:6px;
+border:1px solid #c3a98e;
+border-radius:9px;
+background:#f0e1d0;
+color:#4b3628;
+font-family:Georgia,"Times New Roman",serif
 }
+
 #tambah{
-    width:120px;
-    height:120px;
-    border-radius:50%;
-    background-color:green;
-    color:#ffffff;
+width:175px;
+height:115px;
+border-radius:10%;
+background:#65f1ae;
+border:2px solid #aabd8d;
+font-size:16px
 }
-h3{
-  font-weight:bold;
+
+.status{
+min-height:24px;
+font-size:14px
 }
-       </style>
-    </head>
-    <body>
-    <h1>Clicker Game</h1>
-    <div id="menu">
-    <p>Inspiration: Money Clicker Incremental Roblox</p><br>
-    <button id="play" onclick="start()">Play</button>
-    </div>
-    <div id="gameplay">
-        <button onclick="ulangi()">Reset Score</button>
-        <h3>Score:<span id="skor">0</span></h3>
-        <button onclick="tambahSkor()" id="tambah">$<br>Add Score</button><br>
-        <button onclick="multiple()">Multiple</button>
-        <h2>Multiplier:<span id="multi">1</span></h2><br>
-        <button id="clicker">Clicker<br> Cost: <span id="clickercost"></span></button><br>
-        <button id="rebirth">Prestige: Cost <span id="rebirthCost"></span></button>
-      <br>
-      <button onclick="exportGame()">Export Save</button>
-       <br>
-     <h3>Import Save</h3>
-      <br>
-       <input
-    type="file"
-    id="importFile"
-    accept=".json"
-    onchange="importGame(event)"
+
+hr{
+border:0;
+border-top:1px solid #b39579;
+margin:20px 0
+}
+
+h1,h2,h3{
+font-weight:normal
+}
+
+#account,#register,#login,#gameplay{
+display:none
+}
+
+.currency{
+font-size:20px;
+font-weight:bold
+}
+
+.level{
+font-size:14px;
+opacity:.8
+}
+</style>
+</head>
+
+<body>
+
+<!-- Main Menu -->
+<div id="menu" class="panel">
+
+<h1>Clicker Game</h1>
+
+<p>
+Inspired by Money Clicker Incremental (Roblox) and Cookie Clicker
+</p>
+
+<button onclick="showAccount()">PLAY</button>
+
+</div>
+
+
+<!-- Account Menu -->
+<div id="account" class="panel">
+
+<h2>Welcome</h2>
+
+<button onclick="showRegister()">REGISTER</button>
+
+<button onclick="showLogin()">LOGIN</button>
+
+<p id="accountStatus" class="status"></p>
+
+</div>
+
+
+<!-- Register -->
+<div id="register" class="panel">
+
+<h2>Create Account</h2>
+
+<input id="regUser" placeholder="Username">
+
+<br>
+
+<input
+id="regPass"
+type="password"
+placeholder="Password"
 >
-      <br>
 
-<p id="saveStatus"></p>
-    </div>
-                <script>
-            //start script
-//variables(vip)
-let skor = 0
-let multiplier = 1
-let multiplierCost = 50
-const multiDis = document.getElementById("multi")
-let autoclickerCost = 50
-let rbcost = 1000
-//functions
+<br>
+
+<input
+id="regPass2"
+type="password"
+placeholder="Confirm Password"
+>
+
+<br>
+
+<button onclick="register()">REGISTER</button>
+
+<button onclick="showAccount()">BACK</button>
+
+<p id="regStatus" class="status"></p>
+
+</div>
+
+
+<!-- Login -->
+<div id="login" class="panel">
+
+<h2>Login</h2>
+
+<p>Select your exported save file.</p>
+
+<input
+type="file"
+id="loginFile"
+accept=".json"
+>
+
+<br>
+
+<input
+id="loginUser"
+placeholder="Username"
+>
+
+<br>
+
+<input
+id="loginPass"
+type="password"
+placeholder="Password"
+>
+
+<br>
+
+<button onclick="login()">LOGIN</button>
+
+<button onclick="showAccount()">BACK</button>
+
+<p id="loginStatus" class="status"></p>
+
+</div>
+
+
+<!-- Game -->
+<div id="gameplay" class="game">
+
+<h2>Clicker Game</h2>
+
+<p>
+Account:
+<strong id="user"></strong>
+</p>
+
+<hr>
+
+<div class="level">
+LEVEL <span id="level">1</span>
+</div>
+
+<div class="currency">
+<span id="currencyName">MONEY</span>:
+<span id="skor">0</span>
+</div>
+
+<button onclick="ulangi()">
+RESET SCORE
+</button>
+
+<br>
+
+<button onclick="tambahSkor()" id="tambah">
+$<br>
+ADD MONEY
+</button>
+
+<br>
+
+<button onclick="multiple()">
+MULTIPLE
+</button>
+
+<h3>
+Multiplier:
+<span id"multi">1</span>
+</h3>
+
+<button id="clicker">
+CLICKER<br>
+COST:
+<span id="clickercost"></span>
+</button>
+
+<br>
+
+<button id="rebirth">
+PRESTIGE: COST
+<span id="rebirthCost"></span>
+</button>
+
+<br>
+
+<button id="levelUp" onclick="unlockBitcoin()">
+UNLOCK BITCOIN<br>
+COST: 1.000.000.000.000(1T) MONEY
+</button>
+
+<br>
+
+<button
+id="switchCurrency"
+onclick="switchCurrency()"
+style="display:none"
+>
+SWITCH CURRENCY
+</button>
+
+<hr>
+
+<button onclick="exportGame()">
+EXPORT SAVE
+</button>
+
+<p id="saveStatus" class="status"></p>
+
+</div>
+
+
+<script>
+
+// Variables
+let skor=0;
+let bitcoin=0;
+
+let multiplier=1;
+let multiplierCost=50;
+let autoclickerCost=50;
+let rbcost=1000;
+
+let username="";
+let passwordHash="";
+
+let level=1;
+let currency="money";
+
+const $=id=>document.getElementById(id);
+
+
+// Hash Password
+async function hash(password){
+
+const data=
+new TextEncoder().encode(password);
+
+const buffer=
+await crypto.subtle.digest(
+"SHA-256",
+data
+);
+
+return Array.from(
+new Uint8Array(buffer)
+)
+.map(
+x=>x.toString(16).padStart(2,"0")
+)
+.join("");
+
+}
+
+
+// Menu Control
+function hideAll(){
+
+$("menu").style.display="none";
+$("account").style.display="none";
+$("register").style.display="none";
+$("login").style.display="none";
+$("gameplay").style.display="none";
+
+}
+
+function showAccount(){
+
+hideAll();
+
+$("account").style.display="block";
+
+}
+
+function showRegister(){
+
+hideAll();
+
+$("register").style.display="block";
+
+}
+
+function showLogin(){
+
+hideAll();
+
+$("login").style.display="block";
+
+}
+
+
+// Register Account
+async function register(){
+
+let u=
+$("regUser").value.trim();
+
+let p=
+$("regPass").value;
+
+let p2=
+$("regPass2").value;
+
+if(u.length<3){
+
+$("regStatus").textContent=
+"USERNAME MUST BE AT LEAST 3 CHARACTERS.";
+
+return;
+
+}
+
+if(p.length<4){
+
+$("regStatus").textContent=
+"PASSWORD MUST BE AT LEAST 4 CHARACTERS.";
+
+return;
+
+}
+
+if(p!==p2){
+
+$("regStatus").textContent=
+"PASSWORDS DO NOT MATCH.";
+
+return;
+
+}
+
+username=u;
+
+passwordHash=
+await hash(p);
+
+$("regStatus").textContent=
+"ACCOUNT CREATED.";
+
+setTimeout(
+startGame,
+500
+);
+
+}
+
+
+// Login
+async function login(){
+
+let file=
+$("loginFile").files[0];
+
+let u=
+$("loginUser").value.trim();
+
+let p=
+$("loginPass").value;
+
+if(!file){
+
+$("loginStatus").textContent=
+"SELECT A JSON SAVE FILE.";
+
+return;
+
+}
+
+if(!u||!p){
+
+$("loginStatus").textContent=
+"ENTER USERNAME AND PASSWORD.";
+
+return;
+
+}
+
+let reader=
+new FileReader();
+
+reader.onload=
+async function(){
+
+try{
+
+let save=
+JSON.parse(reader.result);
+
+if(
+save.game!=="AKUHANAN_CLICKER_GAME"||
+save.version!==2||
+!save.username||
+!save.passwordHash||
+!save.data
+){
+
+throw new Error(
+"UNKNOWN SAVE FILE."
+);
+
+}
+
+if(u!==save.username){
+
+throw new Error(
+"WRONG USERNAME."
+);
+
+}
+
+let h=
+await hash(p);
+
+if(h!==save.passwordHash){
+
+throw new Error(
+"WRONG PASSWORD."
+);
+
+}
+
+let d=
+save.data;
+
+if(
+typeof d.score!=="number"||
+typeof d.bitcoin!=="number"||
+typeof d.multiplier!=="number"||
+typeof d.multiplierCost!=="number"||
+typeof d.autoClickerCost!=="number"||
+typeof d.prestigeCost!=="number"||
+typeof d.level!=="number"||
+typeof d.currency!=="string"
+){
+
+throw new Error(
+"INVALID SAVE DATA."
+);
+
+}
+
+username=
+save.username;
+
+passwordHash=
+save.passwordHash;
+
+skor=
+d.score;
+
+bitcoin=
+d.bitcoin;
+
+multiplier=
+d.multiplier;
+
+multiplierCost=
+d.multiplierCost;
+
+autoclickerCost=
+d.autoClickerCost;
+
+rbcost=
+d.prestigeCost;
+
+level=
+d.level;
+
+currency=
+d.currency;
+
+startGame();
+
+$("saveStatus").textContent=
+"SAVE LOADED SUCCESSFULLY.";
+
+}catch(e){
+
+$("loginStatus").textContent=
+"LOGIN FAILED: "+e.message;
+
+}
+
+};
+
+reader.readAsText(file);
+
+}
+
+
+// Start Game
+function startGame(){
+
+hideAll();
+
+$("gameplay").style.display="block";
+
+$("user").textContent=
+username;
+
+update();
+
+}
+
+
+// Currency
+function getScore(){
+
+return currency==="money"
+?skor
+:bitcoin;
+
+}
+
+function setScore(value){
+
+if(currency==="money"){
+
+skor=value;
+
+}else{
+
+bitcoin=value;
+
+}
+
+}
+
+function getCurrencyName(){
+
+return currency==="money"
+?"MONEY"
+:"BITCOIN";
+
+}
+
+function getCurrencySymbol(){
+
+return currency==="money"
+?"$"
+:"₿";
+
+}
+
+
+// Multiplier
 function multiple(){
-  event.stopPropagation() 
-if(skor >= multiplierCost){
-    skor = skor - multiplierCost 
-    multiplierCost = multiplierCost * 3
-    multiplier = multiplier * 2
-    update()
-    }
-else{
-    alert("no enough score. if you want you pay " + multiplierCost + ". ok?")
+
+event.stopPropagation();
+
+let score=
+getScore();
+
+if(score>=multiplierCost){
+
+setScore(
+score-multiplierCost
+);
+
+multiplierCost*=3;
+
+multiplier*=2;
+
+}else{
+
+alert(
+"NOT ENOUGH "+
+getCurrencyName()+
+". YOU NEED "+
+multiplierCost+"."
+);
+
 }
-update()
+
+update();
+
 }
-function tambahSkor() {
-    skor = skor + multiplier 
-    document.getElementById("skor").innerHTML = skor
-    update()
+
+
+// Add Score
+function tambahSkor(){
+
+setScore(
+getScore()+multiplier
+);
+
+update();
+
 }
-function ulangi(){ 
-    var sure = confirm("waittt!!! you sure?")
-    if(sure){
-    skor = 0
-    document.getElementById("skor").innerHTML = skor
-    event.stopPropagation() 
-    multiplier = 1
-    rbcost = 1000
-    autoclickerCost = 50
-    multiplierCost = 50
-    }
-    update()
+
+
+// Reset
+function ulangi(){
+
+if(confirm("ARE YOU SURE?")){
+
+setScore(0);
+
+multiplier=1;
+
+rbcost=1000;
+
+autoclickerCost=50;
+
+multiplierCost=50;
+
 }
-//update function so the screen is changed
-function update() {
-    document.getElementById("skor").innerHTML = skor;
-    document.getElementById("multi").innerHTML = multiplier;
-    document.getElementById("clickercost").innerHTML = autoclickerCost;
-    document.getElementById("rebirthCost").innerHTML = rbcost
+
+update();
+
 }
-update()
-//prestige button
-const rebirth = document.getElementById("rebirth")
-const rCost = document.getElementById("rebirthCost")
-rebirth.addEventListener("click", prestige)
-rCost.innerHTML = rbcost
+
+
+// Update Display
+function update(){
+
+$("skor").innerHTML=
+getScore();
+
+$("multi").innerHTML=
+multiplier;
+
+$("clickercost").innerHTML=
+autoclickerCost;
+
+$("rebirthCost").innerHTML=
+rbcost;
+
+$("level").innerHTML=
+level;
+
+$("currencyName").innerHTML=
+getCurrencyName();
+
+$("tambah").innerHTML=
+getCurrencySymbol()+
+"<br>ADD "+
+getCurrencyName();
+
+if(level>=2){
+
+$("levelUp").style.display=
+"none";
+
+$("switchCurrency").style.display=
+"inline-block";
+
+}else{
+
+$("levelUp").style.display=
+"inline-block";
+
+$("switchCurrency").style.display=
+"none";
+
+}
+
+}
+
+
+// Prestige
+$("rebirth").addEventListener(
+"click",
+prestige
+);
+
 function prestige(){
-  event.stopPropagation()
-     if(skor >= rbcost){
-     skor -= rbcost
-    multiplierCost = 30
-    multiplier *= 10
-    rbcost *= 5
-    rCost.innerHTML = rbcost
-    }else{
-        alert("cant")
-    }
-    update()
+
+event.stopPropagation();
+
+let score=
+getScore();
+
+if(score>=rbcost){
+
+setScore(
+score-rbcost
+);
+
+multiplierCost=30;
+
+multiplier*=10;
+
+rbcost*=5;
+
+}else{
+
+alert(
+"NOT ENOUGH "+
+getCurrencyName()+"."
+);
+
 }
-//autoclicker
-const btnClicker = document.getElementById("clicker")
-// function when clicker button is bought
-btnClicker.addEventListener("click", function(event) {
-    //stop event bubbling
-    event.stopPropagation() 
-    
-    if(skor >= autoclickerCost){
-        skor -= autoclickerCost
-        multiplier *= 2.5
-        autoclickerCost *= 2.5 // price gets 2.5x more expensive
-        update() // update the screen
-    } else {
-        alert("not enough score for auto-clicker! must pay " + autoclickerCost)
-    }
-})
 
-// the auto clicker engine (runs every 1/2 second)
-setInterval(function() {
-    if(multiplier > 0) {
-        skor += multiplier // add score based on multiplier amount
-        update() // update screen every second
-    }
-}, 500) // 500 ms = 1/2 second
+update();
 
-//play button script
-const play = document.getElementById("play")
-const gameplay = document.getElementById("gameplay")
-const menu = document.getElementById("menu")
-play.addEventListener("click", start)
-function start(){
-        menu.style.display = "none"
-    gameplay.style.display = "block"
-    update()
-}
-//Special-import-export
-
-function exportGame() {
-
-    const saveData = {
-        score: skor,
-        multiplier: multiplier,
-        multiplierCost: multiplierCost,
-        autoClickerCost: autoclickerCost,
-        prestigeCost: rbcost
-    };
-
-    const json = JSON.stringify(saveData, null, 2);
-
-    const blob = new Blob(
-        [json],
-        { type: "application/json" }
-    );
-
-    const url = URL.createObjectURL(blob);
-
-    const link = document.createElement("a");
-
-    link.href = url;
-    link.download = "clicker-save.json";
-
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-
-    setTimeout(function() {
-        URL.revokeObjectURL(url);
-    }, 1000);
-
-    document.getElementById("saveStatus").textContent =
-        "Save exported successfully!";
 }
 
 
-function importGame(event) {
+// Auto Clicker
+$("clicker").addEventListener(
+"click",
+function(event){
 
-    const file = event.target.files[0];
+event.stopPropagation();
 
-    if (!file) {
-        return;
-    }
+let score=
+getScore();
 
-    const reader = new FileReader();
+if(score>=autoclickerCost){
 
-    reader.onload = function() {
+setScore(
+score-autoclickerCost
+);
 
-        try {
+multiplier*=2.5;
 
-            const saveData = JSON.parse(reader.result);
+autoclickerCost*=2.5;
 
-            if (
-                typeof saveData.score !== "number" ||
-                typeof saveData.multiplier !== "number" ||
-                typeof saveData.multiplierCost !== "number" ||
-                typeof saveData.autoClickerCost !== "number" ||
-                typeof saveData.prestigeCost !== "number"
-            ) {
-                throw new Error("Invalid save file.");
-            }
+}else{
 
-            skor = saveData.score;
-            multiplier = saveData.multiplier;
-            multiplierCost = saveData.multiplierCost;
-            autoclickerCost = saveData.autoClickerCost;
-            rbcost = saveData.prestigeCost;
+alert(
+"NOT ENOUGH "+
+getCurrencyName()+
+" FOR AUTO-CLICKER. YOU NEED "+
+autoclickerCost+"."
+);
 
-            update();
+}
 
-            document.getElementById("saveStatus").textContent =
-                "Save imported successfully!";
+update();
 
-        } catch (error) {
+});
 
-            document.getElementById("saveStatus").textContent =
-                "Import failed: invalid save file.";
 
-        }
+// Unlock Bitcoin
+function unlockBitcoin(){
 
-    };
+if(level>=2)return;
 
-    reader.onerror = function() {
+if(skor>=1e+12){
 
-        document.getElementById("saveStatus").textContent =
-            "Import failed: could not read the file.";
+skor-=1e+12;
 
-    };
+level=2;
 
-    reader.readAsText(file);
+bitcoin=0;
 
-    // Allows the same file to be imported again
-    event.target.value = "";
-        }
-//end da script
-        </script>
-    </body>
+currency="bitcoin";
+
+$("saveStatus").textContent=
+"BITCOIN UNLOCKED!";
+
+}else{
+
+alert(
+"YOU NEED 1.000.000.000.000(1T) MONEY."
+);
+
+}
+
+update();
+
+}
+
+
+// Switch Currency
+function switchCurrency(){
+
+if(level<2)return;
+
+currency=
+currency==="money"
+?"bitcoin"
+:"money";
+
+update();
+
+}
+
+
+// Auto Score
+setInterval(
+function(){
+
+if(multiplier>0){
+
+setScore(
+getScore()+multiplier
+);
+
+update();
+
+}
+
+},
+500
+);
+
+
+// Export Save
+function exportGame(){
+
+if(!username||!passwordHash){
+
+$("saveStatus").textContent=
+"REGISTER FIRST.";
+
+return;
+
+}
+
+let save={
+
+game:
+"PLAYER_CLICKER_GAME",
+
+version:2,
+
+username:
+username,
+
+passwordHash:
+passwordHash,
+
+data:{
+
+score:
+skor,
+
+bitcoin:
+bitcoin,
+
+multiplier:
+multiplier,
+
+multiplierCost:
+multiplierCost,
+
+autoClickerCost:
+autoclickerCost,
+
+prestigeCost:
+rbcost,
+
+level:
+level,
+
+currency:
+currency
+
+}
+
+};
+
+let blob=
+new Blob(
+[
+JSON.stringify(
+save,
+null,
+2
+)
+],
+{
+type:"application/json"
+}
+);
+
+let url=
+URL.createObjectURL(blob);
+
+let a=
+document.createElement("a");
+
+a.href=
+url;
+
+a.download=
+"clicker-"+
+username+
+"-save.json";
+
+a.click();
+
+setTimeout(
+function(){
+
+URL.revokeObjectURL(url);
+
+},
+1000
+);
+
+$("saveStatus").textContent=
+"SAVE EXPORTED SUCCESSFULLY.";
+
+}
+
+update();
+
+</script>
+
+</body>
 </html>
